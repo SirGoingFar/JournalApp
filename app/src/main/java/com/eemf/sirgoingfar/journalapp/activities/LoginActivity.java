@@ -4,7 +4,6 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -27,10 +26,10 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 
 public class LoginActivity extends AppCompatActivity{
 
-    private UserLoginTask mAuthTask = null;
     private FirebaseAuth mAuth;
 
     // UI references.
@@ -121,18 +120,14 @@ public class LoginActivity extends AppCompatActivity{
             Snackbar.make(mPasswordView, R.string.poor_connectivitiy, Snackbar.LENGTH_LONG).show();
             return;
         }
-        //check if there's an incomplete task for signing in
-        if (mAuthTask != null) {
-            return;
-        }
 
         // Reset errors.
         mEmailView.setError(null);
         mPasswordView.setError(null);
 
         // Store values at the time of the login attempt.
-        String email = mEmailView.getText().toString().trim();
-        String password = mPasswordView.getText().toString();
+        final String email = mEmailView.getText().toString().trim();
+        final String password = mPasswordView.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
@@ -160,24 +155,81 @@ public class LoginActivity extends AppCompatActivity{
             // form field with an error.
             focusView.requestFocus();
         } else {
-            // Show a progress spinner, and kick off a background task to
+            // Show a progress spinner, and kick off the registration
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask(email, password);
-            mAuthTask.execute((Void) null);
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    createUserOnFirebase(email, password);
+                }
+            }).start();
+        }
+    }
+
+    private void createUserOnFirebase(String email, String password) {
+
+        mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull final Task<AuthResult> task) {
+                if(task.isSuccessful())
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            processResponse(task.isSuccessful(), null);
+                        }
+                    });
+                else {
+                    if(task.getException() instanceof FirebaseAuthUserCollisionException)
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                processResponse(task.isSuccessful(), getString(R.string.email_already_registered));
+                            }
+                        });
+                    else
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                processResponse(false, null);
+                            }
+                        });
+                }
+            }
+        });
+    }
+
+    private void processResponse(boolean success, String response){
+        if (success) {
+
+            //navigate to the Catalog Activity
+            Intent intent = new Intent(LoginActivity.this, CatalogActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+
+            showProgress(false);
+        } else {
+            showProgress(false);
+
+            if (response == null)
+                Snackbar.make(mPasswordView,(getString(R.string.pls_retry)),Snackbar.LENGTH_LONG);
+            else
+                Snackbar.make(mPasswordView,response,Snackbar.LENGTH_LONG);
+
+            mLoginFormView.setVisibility(View.VISIBLE);
         }
     }
 
     private boolean isEmailValid(String email) {
         if(isRegistration)
-        return Patterns.EMAIL_ADDRESS.matcher(email).matches();
+            return Patterns.EMAIL_ADDRESS.matcher(email).matches();
         else
             return true;
     }
 
     private boolean isPasswordValid(String password) {
         if(isRegistration)
-        return password.length() >= MIN_PASSWORD_LENGTH;
+            return password.length() >= MIN_PASSWORD_LENGTH;
         else
             //this is for signing in - expand
             return true;
@@ -219,69 +271,13 @@ public class LoginActivity extends AppCompatActivity{
         }
     }
 
-    /**
-     * Represents an asynchronous login/registration task used to authenticate
-     * the user.
-     */
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 
-        private final String mEmail;
-        private final String mPassword;
-        private String mResponse = null;
-        private boolean isSuccessful;
-
-        UserLoginTask(String email, String password) {
-            mEmail = email;
-            mPassword = password;
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            mAuth.createUserWithEmailAndPassword(this.mEmail, this.mPassword).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
-
-                    if(task.getException().getMessage() != null)
-                    mResponse = task.getException().getMessage();
-
-                    if(task.isSuccessful())
-                        isSuccessful = true;
-                    else
-                        isSuccessful = false;
-                }
-            });
-            return isSuccessful;
-        }
-
-        @Override
-        protected void onPostExecute(final Boolean success) {
-            mAuthTask = null;
-            showProgress(false);
-
-            if (success) {
-                //navigate to the Catalog Activity
-                Intent intent = new Intent(LoginActivity.this, CatalogActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
-            } else {
-                Snackbar.make(mPasswordView,mResponse.concat(getString(R.string.pls_retry)),Snackbar.LENGTH_LONG);
-                mLoginFormView.setVisibility(View.VISIBLE);
-            }
-        }
-
-        @Override
-        protected void onCancelled() {
-            mAuthTask = null;
-            showProgress(false);
-        }
-    }
-
-    /**
+   /*
      * on @value KEYCODE_BACK is pressed, @link onKeyDown(keyCode, event) is called
      * @param keyCode is the key code for the key pressed
      * @param event is the key event
-     * @return true or @return the event
-     */
+     * @return true or @return the event*/
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event){
         switch(keyCode){

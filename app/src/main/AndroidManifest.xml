@@ -29,10 +29,6 @@
         <activity
             android:name=".LoginActivity2"
             android:label="@string/title_activity_login2" />
-        <activity
-            android:name=".activities.CatalogActivity"
-            android:label="@string/title_activity_catalog"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
