@@ -106,7 +106,76 @@ public class LoginActivity extends AppCompatActivity{
      * errors are presented and no actual login attempt is made.
      */
     private void attemptSignIn() {
-        //implement for sign in
+        //check if there's an internet connection
+        if(!NetworkUtils.isOnline(this)){
+            Snackbar.make(mPasswordView, R.string.poor_connectivitiy, Snackbar.LENGTH_LONG).show();
+            return;
+        }
+
+        // Reset errors.
+        mEmailView.setError(null);
+        mPasswordView.setError(null);
+
+        // Store values at the time of the login attempt.
+        final String email = mEmailView.getText().toString().trim();
+        final String password = mPasswordView.getText().toString();
+
+        boolean cancel = false;
+        View focusView = null;
+
+        // Check for a valid email address.
+        if (TextUtils.isEmpty(email)) {
+            mEmailView.setError(getString(R.string.error_field_required));
+            focusView = mEmailView;
+            cancel = true;
+        } else if (!isEmailValid(email)) {
+            mEmailView.setError(getString(R.string.error_invalid_email));
+            focusView = mEmailView;
+            cancel = true;
+        }
+
+        if (cancel) {
+            // There was an error; don't attempt login and focus the first
+            // form field with an error.
+            focusView.requestFocus();
+        } else {
+            // Show a progress spinner, and kick off the registration
+            // perform the user login attempt.
+            showProgress(true);
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    signInUser(email, password);
+                }
+            }).start();
+        }
+    }
+
+    private void signInUser(String email, String password) {
+        mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    startActivity(new Intent(LoginActivity.this, CatalogActivity.class));
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            showProgress(false);
+                        }
+                    });
+                }
+                else {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            showProgress(false);
+                            Snackbar.make(mEmailView, getString(R.string.login_error_message), Snackbar.LENGTH_LONG).show();
+                            mPasswordView.setText("");
+                        }
+                    });
+                }
+            }
+        });
     }
 
     /**
@@ -212,11 +281,12 @@ public class LoginActivity extends AppCompatActivity{
             showProgress(false);
 
             if (response == null)
-                Snackbar.make(mPasswordView,(getString(R.string.pls_retry)),Snackbar.LENGTH_LONG);
+                Snackbar.make(mPasswordView,(getString(R.string.pls_retry)),Snackbar.LENGTH_LONG).show();
             else
-                Snackbar.make(mPasswordView,response,Snackbar.LENGTH_LONG);
+                Snackbar.make(mPasswordView,response,Snackbar.LENGTH_LONG).show();
 
             mLoginFormView.setVisibility(View.VISIBLE);
+            mPasswordView.setText("");
         }
     }
 

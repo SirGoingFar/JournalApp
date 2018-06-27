@@ -27,8 +27,9 @@
             android:name=".activities.LoginActivity"
             android:label="@string/title_activity_login" />
         <activity
-            android:name=".LoginActivity2"
-            android:label="@string/title_activity_login2" />
+            android:name=".activities.CatalogActivity"
+            android:label="@string/my_journal"
+            android:launchMode="singleTop"/>
     </application>
 
 </manifest>

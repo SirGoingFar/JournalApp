@@ -1,6 +1,7 @@
 <resources>
+
+    <!-- Strings related to Splash screen-->
     <string name="app_name">JournalApp</string>
-    <string name="my_journal">My Journal</string>
     <string name="andela_logo">Andela Logo</string>
     <string name="google_logo">Google Logo</string>
     <string name="udacity_logo">Udacity Logo</string>
@@ -25,7 +26,9 @@
     <string name="sign_in">Sign in</string>
     <string name="title_activity_login2">Sign in</string>
     <string name="poor_connectivitiy">Please check your internet connectivity.</string>
-    <string name="title_activity_catalog">Journal Catalog</string>
     <string name="pls_retry">Registration unsuccessful, please try again.</string>
     <string name="email_already_registered">E-mail address already registered</string>
+    <string name="title_activity_catalog">CatalogActivity</string>
+    <string name="my_journal">My Journal</string>
+    <string name="login_error_message">Enter correct login credentials</string>
 </resources>
