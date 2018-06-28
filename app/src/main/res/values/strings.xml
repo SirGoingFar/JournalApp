@@ -31,4 +31,21 @@
     <string name="title_activity_catalog">CatalogActivity</string>
     <string name="my_journal">My Journal</string>
     <string name="login_error_message">Enter correct login credentials</string>
+    <string name="journal_title">Journal Title</string>
+    <string name="journal_content">Journal Content</string>
+    <string name="created_at">June 12, 2018</string>
+    <string name="edited">EDITED</string>
+    <string name="keyword_edited">EDITED</string>
+    <string name="keyword_unedited">UNEDITED</string>
+    <string name="insert_new_journal">Insert new journal</string>
+    <string name="delete_all_journals">Delete all journals</string>
+    <string name="logout">Logout</string>
+    <string name="settings">Settings</string>
+    <string name="title_activity_add_journal">Add Journal</string>
+    <string name="keyword_show">SHOW</string>
+    <string name="keyword_hide">HIDE</string>
+    <string name="journal_content_edittext_hint">You can write here...!</string>
+    <string name="keyword_save">SAVE</string>
+    <string name="keyword_cancel">CANCEL</string>
+    <string name="actionbar_title_edit_journal">Edit Journal</string>
 </resources>
