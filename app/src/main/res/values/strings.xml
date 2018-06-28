@@ -48,4 +48,13 @@
     <string name="keyword_save">SAVE</string>
     <string name="keyword_cancel">CANCEL</string>
     <string name="actionbar_title_edit_journal">Edit Journal</string>
+    <string name="alert_dialog_negative_button_label">NO</string>
+    <string name="alert_dialog_positive_button_label">YES</string>
+    <string name="journal_edit_notif_msg">Do you want to save changes to this Journal?</string>
+    <string name="new_journal_save_notif_msg">Do you want to save this Journal?</string>
+    <string name="ignore_journal_edit_notif_msg">Ignore changes made?</string>
+    <string name="close_journal_without_saving_notif_msg">Close without saving?</string>
+    <string name="nothing_to_save_toast_msg">Nothing to save!</string>
+    <string name="title_not_empty_error_msg">Journal Title cannot be empty!</string>
+    <string name="content_not_empty_error_msg">Journal Content cannot be empty!</string>
 </resources>

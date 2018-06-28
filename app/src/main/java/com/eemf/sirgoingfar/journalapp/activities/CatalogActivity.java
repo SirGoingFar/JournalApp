@@ -82,6 +82,7 @@ public class CatalogActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
+            case R.id.action_logout_list:
             case R.id.action_logout:
                 logoutUser();
                 return true;

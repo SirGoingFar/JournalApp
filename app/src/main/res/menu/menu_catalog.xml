@@ -15,12 +15,19 @@
     <item
         android:id="@+id/action_logout"
         android:title="@string/logout"
+        android:icon="@drawable/ic_logout"
         app:showAsAction="ifRoom"
         android:orderInCategory="3"/>
 
     <item
         android:id="@+id/action_setting"
         android:title="@string/settings"
+        app:showAsAction="never"
+        android:orderInCategory="4"/>
+
+    <item
+        android:id="@+id/action_logout_list"
+        android:title="@string/logout"
         app:showAsAction="never"
         android:orderInCategory="4"/>
 </menu>
