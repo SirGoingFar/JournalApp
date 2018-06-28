@@ -4,6 +4,8 @@
     <color name="colorAccent">#0097A7</color>
     <color name="colorPrimaryText">#000000</color>
     <color name="colorDarkGray">#BDBDBD</color>
-    <color name="colorLightGray">#d2d1d1</color>
+    <color name="colorLightGray">#f7f5f5</color>
     <color name="colorWhite">#FFFFFF</color>
+    <color name="colorStatusEdited">#ff3366</color>
+    <color name="colorIconTint">#e8e8e8</color>
 </resources>

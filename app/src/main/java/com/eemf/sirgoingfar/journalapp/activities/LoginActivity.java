@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Patterns;
 import android.view.KeyEvent;
@@ -17,6 +18,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -39,6 +42,7 @@ public class LoginActivity extends AppCompatActivity{
     private View mLoginFormView;
     private Button mEmailSignInButton;
     private TextView mOnboardingSwitcher;
+    private CheckBox mPasswordToggler;
 
     private boolean isRegistration;
     private int MIN_PASSWORD_LENGTH = 6;
@@ -65,13 +69,27 @@ public class LoginActivity extends AppCompatActivity{
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
         mOnboardingSwitcher = findViewById(R.id.tv_sign_in_or_register);
-        mOnboardingSwitcher.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                isRegistration = !isRegistration;
-                setupScreen();
-            }
-        });
+            mOnboardingSwitcher.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    isRegistration = !isRegistration;
+                    setupScreen();
+                }
+            });
+
+        mPasswordToggler = findViewById(R.id.cb_password_toggle);
+            mPasswordToggler.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    mPasswordToggler.setText(isChecked ? getString(R.string.keyword_hide) : getString(R.string.keyword_show));
+
+                    //change the type of the input field
+                    mPasswordView.setInputType(isChecked ? InputType.TYPE_TEXT_VARIATION_PASSWORD :
+                            InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+
+                    mPasswordView.setSelection(mPasswordView.getText().toString().length());
+                }
+            });
 
         //instantiate the FirebaseAuth
         mAuth = FirebaseAuth.getInstance();
