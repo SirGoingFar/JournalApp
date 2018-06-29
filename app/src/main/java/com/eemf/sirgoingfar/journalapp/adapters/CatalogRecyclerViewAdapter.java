@@ -57,8 +57,6 @@ public class CatalogRecyclerViewAdapter extends RecyclerView.Adapter<CatalogRecy
     public void onBindViewHolder(@NonNull Holder holder, int position) {
         holder.journalTitle.setText(getJournal(position).getJournalTitle());
         holder.journalPreview.setText(getJournal(position).getJournalContent());
-
-        //Todo date conversion here
         holder.journalCreatedAt.setText(formatDate(getJournal(position).getCreatedAt()));
         holder.journalEditStatus.setText(getJournal(position).getEditStatus() == 1
                 ? context.getString(R.string.keyword_unedited) : context.getString(R.string.keyword_edited));
@@ -75,7 +73,14 @@ public class CatalogRecyclerViewAdapter extends RecyclerView.Adapter<CatalogRecy
 
     @Override
     public int getItemCount() {
-        return journal.size();
+        if(journal != null)
+            return journal.size();
+        else
+            return 0;
+    }
+
+    public List<JournalEntry> getJournals() {
+        return journal;
     }
 
     class Holder extends RecyclerView.ViewHolder{
@@ -94,14 +99,14 @@ public class CatalogRecyclerViewAdapter extends RecyclerView.Adapter<CatalogRecy
             journalCreatedAt = itemView.findViewById(R.id.tv_created_at);
             journalEditStatus = itemView.findViewById(R.id.ct_edit_status);
             container = itemView.findViewById(R.id.list_item_container);
-                container.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent previewJournal = new Intent (context, JournalPreviewActivity.class);
-                        previewJournal.putExtra(EXTRA_INDEX, Integer.valueOf(itemView.getTag().toString()));
-                        context.startActivity(previewJournal);
-                    }
-                });
+            container.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent previewJournal = new Intent (context, JournalPreviewActivity.class);
+                    previewJournal.putExtra(EXTRA_INDEX, Integer.valueOf(itemView.getTag().toString()));
+                    context.startActivity(previewJournal);
+                }
+            });
         }
     }
 }

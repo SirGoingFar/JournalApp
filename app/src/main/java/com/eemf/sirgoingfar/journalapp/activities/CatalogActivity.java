@@ -34,6 +34,7 @@ public class CatalogActivity extends AppCompatActivity {
 
     private FrameLayout mEmptyStateView;
     private RecyclerView mCatalogRecyclerView;
+    private List<JournalEntry> currentJournalList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,8 +60,15 @@ public class CatalogActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-                //Todo perform the swipe to delete operation
+            public void onSwiped(final RecyclerView.ViewHolder viewHolder, int direction) {
+                AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        int position = viewHolder.getAdapterPosition();
+                        List<JournalEntry> journals = mAdapter.getJournals();
+                        mDb.journalDao().deleteJournal(journals.get(position));
+                    }
+                });
             }
         }).attachToRecyclerView(mCatalogRecyclerView);
 
@@ -81,6 +89,7 @@ public class CatalogActivity extends AppCompatActivity {
             @Override
             public void onChanged(@Nullable List<JournalEntry> journalEntries) {
                 mAdapter.setJournal(journalEntries);
+                currentJournalList = journalEntries;
                 showCorrectView(journalEntries.size() < 1);
             }
         });
@@ -117,14 +126,16 @@ public class CatalogActivity extends AppCompatActivity {
                 return true;
 
             case R.id.action_delete_all_journals:
-                createAlertDialog(getString(R.string.delete_all_journals_prompt))
-                        .setNegativeButton(getString(R.string.alert_dialog_negative_button_label), null)
-                        .setPositiveButton(getString(R.string.alert_dialog_positive_button_label), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                deleteAllJournals();
-                            }
-                        }).create().show();
+                if(currentJournalList.size() > 0) {
+                    createAlertDialog(getString(R.string.delete_all_journals_prompt))
+                            .setNegativeButton(getString(R.string.alert_dialog_negative_button_label), null)
+                            .setPositiveButton(getString(R.string.alert_dialog_positive_button_label), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    deleteAllJournals();
+                                }
+                            }).create().show();
+                }
                 return true;
 
             case R.id.action_setting:
