@@ -10,17 +10,35 @@
 
 <!--TODO: Add summary at the top; e.g. You have 28 journals-->
 
+    <FrameLayout
+        android:id="@+id/fl_empty_state_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorWhite"
+        android:visibility="gone">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/empty_catalog_prompt"
+            android:textColor="@color/colorDarkGray"
+            android:textSize="@dimen/text_25sp"
+            android:textAlignment="center"
+            android:lineSpacingExtra="@dimen/dimen_5dp"
+            android:layout_gravity="center"/>
+    </FrameLayout>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_journal_catalog"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layoutManager="android.support.v7.widget.LinearLayoutManager"/>
+        app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+        android:layout_marginBottom="@dimen/dimen_16dp"/>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_add_new_journal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/colorStatusEdited"
+        android:background="@color/colorStatusEdited"
         android:layout_margin="@dimen/dimen_16dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"

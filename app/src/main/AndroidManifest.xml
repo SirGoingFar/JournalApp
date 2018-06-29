@@ -14,15 +14,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <activity
             android:name=".activities.SplashActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
-
         <activity
             android:name=".activities.LoginActivity"
             android:label="@string/title_activity_login" />
-
         <activity
             android:name=".activities.CatalogActivity"
             android:label="@string/my_journal"
@@ -33,10 +30,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".activities.AddJournalActivity"
-            android:label="@string/title_activity_add_journal"/>
+            android:label="@string/title_activity_add_journal" />
+        <activity
+            android:name=".activities.JournalPreviewActivity"
+            android:label="@string/title_activity_journal_preview" />
     </application>
 
 </manifest>

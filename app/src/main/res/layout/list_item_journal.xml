@@ -23,16 +23,16 @@
                 android:id="@+id/guideline"
                 android:layout_width="@dimen/dimen_0dp"
                 android:layout_height="wrap_content"
-                app:layout_constraintGuide_percent="0.7"
+                app:layout_constraintGuide_percent="0.65"
                 android:orientation="vertical"/>
 
             <TextView
                 android:id="@+id/tv_journal_title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dimen_8dp"
+                android:layout_marginLeft="@dimen/dimen_16dp"
                 android:layout_marginRight="@dimen/dimen_8dp"
-                android:layout_marginTop="@dimen/dimen_4dp"
+                android:layout_marginTop="@dimen/dimen_8dp"
                 android:maxLines="1"
                 android:text="@string/journal_title"
                 android:textColor="@color/colorPrimaryText"
@@ -54,18 +54,19 @@
                 app:layout_constraintRight_toRightOf="@id/tv_journal_title"
                 app:layout_constraintTop_toBottomOf="@id/tv_journal_title"
                 app:layout_constraintBottom_toBottomOf="parent"
-                android:layout_marginRight="@dimen/dimen_4dp"
+                android:layout_marginRight="@dimen/dimen_8dp"
                 android:maxLines="1"
+                android:layout_marginTop="@dimen/dimen_4dp"
                 android:layout_marginEnd="@dimen/dimen_4dp"
-                android:layout_marginBottom="@dimen/dimen_4dp"/>
+                android:layout_marginBottom="@dimen/dimen_8dp"/>
 
             <TextView
                 android:id="@+id/tv_created_at"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dimen_4dp"
-                android:layout_marginLeft="@dimen/dimen_8dp"
-                android:layout_marginRight="@dimen/dimen_8dp"
+                android:layout_marginTop="@dimen/dimen_8dp"
+                android:layout_marginLeft="@dimen/dimen_16dp"
+                android:layout_marginRight="@dimen/dimen_16dp"
                 android:maxLines="2"
                 android:text="@string/created_at"
                 android:gravity="end"
@@ -95,7 +96,8 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:background="@drawable/bg_edit_status"
                 android:checked="true"
-                android:layout_marginBottom="@dimen/dimen_4dp" />
+                android:layout_marginTop="@dimen/dimen_4dp"
+                android:layout_marginBottom="@dimen/dimen_8dp" />
 
         </android.support.constraint.ConstraintLayout>
     </android.support.v7.widget.CardView>

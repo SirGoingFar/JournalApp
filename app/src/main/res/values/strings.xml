@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
     <!-- Strings related to Splash screen-->
     <string name="app_name">JournalApp</string>
@@ -57,4 +57,12 @@
     <string name="nothing_to_save_toast_msg">Nothing to save!</string>
     <string name="title_not_empty_error_msg">Journal Title cannot be empty!</string>
     <string name="content_not_empty_error_msg">Journal Content cannot be empty!</string>
+    <string name="title_activity_journal_preview">Journal Preview</string>
+    <string name="last_update">LAST UPDATED: <xliff:g example="date" id="date_update">%s</xliff:g></string>
+    <string name="keyword_edit">Edit</string>
+    <string name="copied_link_clipboard_label">Copied Link</string>
+    <string name="copied_link_toast_msg_content">Link copied to clipboard</string>
+    <string name="never_edited">Never edited</string>
+    <string name="delete_all_journals_prompt">Are you sure you want to delete all the journals in your catalog?</string>
+    <string name="empty_catalog_prompt">Click on the floating button below to insert a new journal to the catalog.</string>
 </resources>
