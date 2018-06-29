@@ -13,29 +13,37 @@ import android.widget.CheckedTextView;
 import android.widget.TextView;
 
 import com.eemf.sirgoingfar.journalapp.R;
-import com.eemf.sirgoingfar.journalapp.activities.AddJournalActivity;
-import com.eemf.sirgoingfar.journalapp.models.JournalEntity;
+import com.eemf.sirgoingfar.journalapp.activities.JournalPreviewActivity;
+import com.eemf.sirgoingfar.journalapp.database.JournalEntry;
 
-import java.util.ArrayList;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 public class CatalogRecyclerViewAdapter extends RecyclerView.Adapter<CatalogRecyclerViewAdapter.Holder>{
 
-    private ArrayList<JournalEntity> journal;
+    private List<JournalEntry> journal;
     private Context context;
     public static final String EXTRA_INDEX = "journal_index";
 
-    public CatalogRecyclerViewAdapter(Context context, ArrayList<JournalEntity> journal) {
+    public CatalogRecyclerViewAdapter(Context context) {
         this.context = context;
-        this.journal = journal;
     }
 
-    private JournalEntity getJournal(int position) {
+    private JournalEntry getJournal(int position) {
         return journal.get(position);
     }
 
-    public void setJournal(ArrayList<JournalEntity> journal) {
-        this.journal = journal;
+    public void setJournal(List<JournalEntry> journals) {
+        this.journal = journals;
         notifyDataSetChanged();
+    }
+
+    private String formatDate(Date date){
+        String DATE_FORMAT = "EEE, d MMMM yyyy";
+        SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT, Locale.getDefault());
+        return dateFormat.format(date);
     }
 
     @NonNull
@@ -51,7 +59,7 @@ public class CatalogRecyclerViewAdapter extends RecyclerView.Adapter<CatalogRecy
         holder.journalPreview.setText(getJournal(position).getJournalContent());
 
         //Todo date conversion here
-        holder.journalCreatedAt.setText(getJournal(position).getCreatedAt().toString());
+        holder.journalCreatedAt.setText(formatDate(getJournal(position).getCreatedAt()));
         holder.journalEditStatus.setText(getJournal(position).getEditStatus() == 1
                 ? context.getString(R.string.keyword_unedited) : context.getString(R.string.keyword_edited));
 
@@ -59,7 +67,7 @@ public class CatalogRecyclerViewAdapter extends RecyclerView.Adapter<CatalogRecy
         holder.journalEditStatus.setChecked(getJournal(position).getEditStatus() != 1);
 
         //set tag for easy reference
-        holder.container.setTag(getJournal(position).get_id());
+        holder.container.setTag(getJournal(position).getId());
 
         //animate holders
         holder.itemView.startAnimation(AnimationUtils.loadAnimation(context, android.R.anim.slide_in_left));
@@ -89,9 +97,9 @@ public class CatalogRecyclerViewAdapter extends RecyclerView.Adapter<CatalogRecy
                 container.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent editJournal = new Intent(context, AddJournalActivity.class);
-                        editJournal.putExtra(EXTRA_INDEX, Integer.valueOf(itemView.getTag().toString()));
-                        context.startActivity(editJournal);
+                        Intent previewJournal = new Intent (context, JournalPreviewActivity.class);
+                        previewJournal.putExtra(EXTRA_INDEX, Integer.valueOf(itemView.getTag().toString()));
+                        context.startActivity(previewJournal);
                     }
                 });
         }
