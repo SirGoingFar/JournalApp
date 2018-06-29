@@ -7,6 +7,7 @@ import android.content.ClipboardManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -28,6 +29,7 @@ import com.eemf.sirgoingfar.journalapp.database.AppDatabase;
 import com.eemf.sirgoingfar.journalapp.database.JournalEntry;
 import com.eemf.sirgoingfar.journalapp.models.AddJournalViewModel;
 import com.eemf.sirgoingfar.journalapp.models.AddJournalViewModelFactory;
+import com.eemf.sirgoingfar.journalapp.utils.NetworkUtils;
 import com.eemf.sirgoingfar.journalapp.web_browser.DefaultWebBrowserFragment;
 import com.eemf.sirgoingfar.journalapp.web_browser.WebViewHandler;
 
@@ -75,7 +77,6 @@ public class JournalPreviewActivity extends AppCompatActivity{
     }
 
     private void fetchJournalFromDatabase(int journalIndex) {
-        //Todo Fetch data from Db
         AddJournalViewModelFactory factory = new AddJournalViewModelFactory(mDb, journalIndex);
         final AddJournalViewModel model = ViewModelProviders.of(this, factory).get(AddJournalViewModel.class);
         model.getJournal().observe(this, new Observer<JournalEntry>() {
@@ -104,7 +105,10 @@ public class JournalPreviewActivity extends AppCompatActivity{
                     @Override
                     public boolean onClick(TextView textView, String url) {
 
-                        startWebBrowser(url);
+                        if(NetworkUtils.isOnline(JournalPreviewActivity.this))
+                            startWebBrowser(url);
+                        else
+                            Snackbar.make(mTitleCardView, R.string.poor_connectivitiy, Snackbar.LENGTH_LONG).show();
 
                         return true;
                     }

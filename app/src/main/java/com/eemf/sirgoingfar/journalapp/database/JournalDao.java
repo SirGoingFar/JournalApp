@@ -29,5 +29,5 @@ public interface JournalDao {
     void updateJournal(JournalEntry journal);
 
     @Delete
-    void deleteJournalById(JournalEntry journal);
+    void deleteJournal(JournalEntry journal);
 }

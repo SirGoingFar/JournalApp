@@ -24,6 +24,7 @@
             android:textSize="@dimen/text_25sp"
             android:textAlignment="center"
             android:lineSpacingExtra="@dimen/dimen_5dp"
+            android:layout_margin="@dimen/dimen_16dp"
             android:layout_gravity="center"/>
     </FrameLayout>
 
@@ -32,7 +33,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layoutManager="android.support.v7.widget.LinearLayoutManager"
-        android:layout_marginBottom="@dimen/dimen_16dp"/>
+        android:layout_marginTop="@dimen/dimen_8dp"/>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_add_new_journal"
