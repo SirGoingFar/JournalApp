@@ -16,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import com.eemf.sirgoingfar.journalapp.R;
 import com.eemf.sirgoingfar.journalapp.adapters.CatalogRecyclerViewAdapter;
@@ -23,6 +24,7 @@ import com.eemf.sirgoingfar.journalapp.database.AppDatabase;
 import com.eemf.sirgoingfar.journalapp.database.AppExecutors;
 import com.eemf.sirgoingfar.journalapp.database.JournalEntry;
 import com.eemf.sirgoingfar.journalapp.models.CatalogViewModel;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.List;
 
@@ -34,12 +36,17 @@ public class CatalogActivity extends AppCompatActivity {
 
     private FrameLayout mEmptyStateView;
     private RecyclerView mCatalogRecyclerView;
-    private List<JournalEntry> currentJournalList;
+    private List<JournalEntry> mCurrentJournalList;
+
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_catalog);
+
+        //initialize FirebaseAuth instance
+        mAuth = FirebaseAuth.getInstance();
 
         //initialize the connectors
         mDb = AppDatabase.getInstance(this);
@@ -89,7 +96,7 @@ public class CatalogActivity extends AppCompatActivity {
             @Override
             public void onChanged(@Nullable List<JournalEntry> journalEntries) {
                 mAdapter.setJournal(journalEntries);
-                currentJournalList = journalEntries;
+                mCurrentJournalList = journalEntries;
                 showCorrectView(journalEntries.size() < 1);
             }
         });
@@ -118,7 +125,15 @@ public class CatalogActivity extends AppCompatActivity {
         switch (item.getItemId()){
             case R.id.action_logout_list:
             case R.id.action_logout:
-                logoutUser();
+                createAlertDialog(getString(R.string.logout_prompt))
+                        .setNegativeButton(getString(R.string.alert_dialog_negative_button_label), null)
+                        .setPositiveButton(getString(R.string.alert_dialog_positive_button_label), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                //log the user out
+                                logoutUser();
+                            }
+                        }).create().show();
                 return true;
 
             case R.id.action_insert_new_journal:
@@ -126,7 +141,7 @@ public class CatalogActivity extends AppCompatActivity {
                 return true;
 
             case R.id.action_delete_all_journals:
-                if(currentJournalList.size() > 0) {
+                if(mCurrentJournalList.size() > 0) {
                     createAlertDialog(getString(R.string.delete_all_journals_prompt))
                             .setNegativeButton(getString(R.string.alert_dialog_negative_button_label), null)
                             .setPositiveButton(getString(R.string.alert_dialog_positive_button_label), new DialogInterface.OnClickListener() {
@@ -135,7 +150,9 @@ public class CatalogActivity extends AppCompatActivity {
                                     deleteAllJournals();
                                 }
                             }).create().show();
-                }
+                } else
+                    Toast.makeText(this, R.string.catalog_already_empty, Toast.LENGTH_LONG).show();
+
                 return true;
 
             case R.id.action_setting:
@@ -160,7 +177,14 @@ public class CatalogActivity extends AppCompatActivity {
     }
 
     private void logoutUser() {
-        //Todo: Log user out completely and clear all necessary preferences
+        //Reset FirebaseAuth and FirebaseUser by setting them to null
+        mAuth.signOut();
+
+        //close the Catalog activity
+        finish();
+
+        //launch the Login activity
+        startActivity(new Intent(this, LoginActivity.class));
     }
 
 
