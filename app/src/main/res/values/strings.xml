@@ -27,7 +27,7 @@
     <string name="email_already_registered">E-mail address already registered</string>
     <string name="title_activity_catalog">CatalogActivity</string>
     <string name="my_journal">My Journal</string>
-    <string name="login_error_message">Enter correct login credentials</string>
+    <string name="login_error_message">Unable to sign in, please retry (check your email, password and/or your internet connectivity).</string>
     <string name="journal_title">Diary Entry Title</string>
     <string name="journal_content">Diary Entry Content</string>
     <string name="created_at">June 12, 2018</string>
@@ -48,7 +48,7 @@
     <string name="alert_dialog_negative_button_label">NO</string>
     <string name="alert_dialog_positive_button_label">YES</string>
     <string name="journal_edit_notif_msg">Do you want to save changes to this diary entry?</string>
-    <string name="new_journal_save_notif_msg">Do you want to save this dairy entry?</string>
+    <string name="new_journal_save_notif_msg">Do you want to save this diary entry?</string>
     <string name="ignore_journal_edit_notif_msg">Ignore changes made?</string>
     <string name="close_journal_without_saving_notif_msg">Close without saving?</string>
     <string name="nothing_to_save_toast_msg">Nothing to save!</string>
@@ -61,5 +61,7 @@
     <string name="copied_link_toast_msg_content">Link copied to clipboard</string>
     <string name="never_edited">Never edited</string>
     <string name="delete_all_journals_prompt">Are you sure you want to delete all the diary entries in your catalog?</string>
-    <string name="empty_catalog_prompt">Click on the floating button below to insert a new diary entry to the catalog.</string>
+    <string name="empty_catalog_prompt">Oops! Your catalog is empty. Click on the floating button below to insert a new diary entry to the catalog.</string>
+    <string name="catalog_already_empty">Catalog is already empty</string>
+    <string name="logout_prompt">Do you want to logout?</string>
 </resources>
