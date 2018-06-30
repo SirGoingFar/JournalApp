@@ -24,6 +24,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.eemf.sirgoingfar.journalapp.R;
+import com.eemf.sirgoingfar.journalapp.database.AppExecutors;
 import com.eemf.sirgoingfar.journalapp.utils.NetworkUtils;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -47,10 +48,15 @@ public class LoginActivity extends AppCompatActivity{
     private boolean isRegistration;
     private int MIN_PASSWORD_LENGTH = 6;
 
+    private AppExecutors mExecutor;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        //initialize AppExecutor Object
+        mExecutor = AppExecutors.getInstance();
 
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.et_email);
@@ -69,27 +75,27 @@ public class LoginActivity extends AppCompatActivity{
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
         mOnboardingSwitcher = findViewById(R.id.tv_sign_in_or_register);
-            mOnboardingSwitcher.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    isRegistration = !isRegistration;
-                    setupScreen();
-                }
-            });
+        mOnboardingSwitcher.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isRegistration = !isRegistration;
+                setupScreen();
+            }
+        });
 
         mPasswordToggler = findViewById(R.id.cb_password_toggle);
-            mPasswordToggler.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    mPasswordToggler.setText(isChecked ? getString(R.string.keyword_hide) : getString(R.string.keyword_show));
+        mPasswordToggler.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                mPasswordToggler.setText(isChecked ? getString(R.string.keyword_hide) : getString(R.string.keyword_show));
 
-                    //change the type of the input field
-                    mPasswordView.setInputType(isChecked ? InputType.TYPE_TEXT_VARIATION_PASSWORD :
-                            InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                //change the type of the input field
+                mPasswordView.setInputType(isChecked ? InputType.TYPE_TEXT_VARIATION_PASSWORD :
+                        InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
 
-                    mPasswordView.setSelection(mPasswordView.getText().toString().length());
-                }
-            });
+                mPasswordView.setSelection(mPasswordView.getText().toString().length());
+            }
+        });
 
         //instantiate the FirebaseAuth
         mAuth = FirebaseAuth.getInstance();
@@ -160,12 +166,12 @@ public class LoginActivity extends AppCompatActivity{
             // Show a progress spinner, and kick off the registration
             // perform the user login attempt.
             showProgress(true);
-            new Thread(new Runnable() {
+            mExecutor.networkIO().execute(new Runnable() {
                 @Override
                 public void run() {
                     signInUser(email, password);
                 }
-            }).start();
+            });
         }
     }
 
@@ -245,12 +251,12 @@ public class LoginActivity extends AppCompatActivity{
             // Show a progress spinner, and kick off the registration
             // perform the user login attempt.
             showProgress(true);
-            new Thread(new Runnable() {
+            mExecutor.networkIO().execute(new Runnable() {
                 @Override
                 public void run() {
                     createUserOnFirebase(email, password);
                 }
-            }).start();
+            });
         }
     }
 
@@ -309,18 +315,11 @@ public class LoginActivity extends AppCompatActivity{
     }
 
     private boolean isEmailValid(String email) {
-        if(isRegistration)
-            return Patterns.EMAIL_ADDRESS.matcher(email).matches();
-        else
-            return true;
+        return Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 
     private boolean isPasswordValid(String password) {
-        if(isRegistration)
-            return password.length() >= MIN_PASSWORD_LENGTH;
-        else
-            //this is for signing in - expand
-            return true;
+        return !isRegistration || password.length() >= MIN_PASSWORD_LENGTH;
     }
 
     /**
@@ -356,6 +355,22 @@ public class LoginActivity extends AppCompatActivity{
             // and hide the relevant UI components.
             mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
             mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+        }
+
+        //set ActionBar title as appropriate
+        ActionBar bar = getSupportActionBar();
+        if(bar != null){
+            if(show){
+                if(isRegistration)
+                    bar.setTitle(R.string.signing_up);
+                else
+                    bar.setTitle(R.string.signing_in);
+            }else {
+                if(isRegistration)
+                    bar.setTitle(getString(R.string.sign_up));
+                else
+                    bar.setTitle(getString(R.string.sign_in));
+            }
         }
     }
 

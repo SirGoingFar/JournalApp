@@ -16,7 +16,6 @@ public class RetrieveUserDataTask {
 //        (onSuccess) {
         Log.d("Akintunde:", "Retrieval done");
         if (serviceAction.equalsIgnoreCase(SplashActivity.SERVICE_ACTION))
-            Log.d("Akintunde:", "User logged in starting the catalog Activity");
             context.startActivity(new Intent(context, CatalogActivity.class));
 //        }
     }

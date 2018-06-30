@@ -11,7 +11,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -186,7 +185,6 @@ public class CatalogActivity extends AppCompatActivity {
 
         //launch the Login activity
         startActivity(new Intent(this, LoginActivity.class));
-        Log.d("Akintunde:", "User logged out successfully");
     }
 
 

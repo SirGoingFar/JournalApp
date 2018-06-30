@@ -4,12 +4,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.eemf.sirgoingfar.journalapp.R;
+import com.eemf.sirgoingfar.journalapp.database.AppExecutors;
 import com.eemf.sirgoingfar.journalapp.service.RetrieveUserDataService;
 import com.eemf.sirgoingfar.journalapp.utils.NetworkUtils;
 import com.google.firebase.auth.FirebaseAuth;
@@ -19,20 +19,15 @@ import static java.lang.Thread.sleep;
 
 public class SplashActivity extends AppCompatActivity {
 
-    //    @BindView(R.id.iv_andela_logo)
     private ImageView andelaLogo;
-    //    @BindView(R.id.iv_google_logo)
     private ImageView googleLogo;
-
-    //    @BindView(R.id.iv_udacity_logo)
     private ImageView udacityLogo;
 
     private Intent intent;
     public static String ACTION_LOGIN = "login";
 
-    //Firebase Authentication objects
+    //Firebase Authentication object
     private FirebaseAuth mAuth;
-    private FirebaseAuth.AuthStateListener mAuthListener;
 
     public static final String SERVICE_ACTION = "start_catalog_activity";
     public static final String USER_ID = "user_id";
@@ -42,7 +37,6 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-//        ButterKnife.bind(this);
 
         andelaLogo = findViewById(R.id.iv_andela_logo);
         googleLogo = findViewById(R.id.iv_google_logo);
@@ -134,32 +128,31 @@ public class SplashActivity extends AppCompatActivity {
         Intent intent = new Intent(this, RetrieveUserDataService.class);
         intent.setAction(SERVICE_ACTION);
         intent.putExtra(USER_ID, userId);
-        Log.d("Akintunde:", "Starting a service to retrieve user data");
         startService(intent);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-//        mAuth.addAuthStateListener(mAuthListener);
-        Log.d("Akintunde:", "Trying to check for a login user");
-        FirebaseUser currentUser = mAuth.getCurrentUser();
 
-        if(currentUser == null) {
-            //no user is logged in
-            Log.d("Akintunde:", "No user is logged in");
-            startActivity(new Intent(SplashActivity.this, LoginActivity.class));
-        }else {
-            //a user is currently logged in
-            Log.d("Akintunde:", "A user is actually logged in");
-            fetchUserDocumentFromFirebase(currentUser.getUid());
-        }
-    }
+        final FirebaseUser currentUser = mAuth.getCurrentUser();
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        mAuth.removeAuthStateListener(mAuthListener);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                AppExecutors.getInstance().mainThread().execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        if(currentUser == null)
+                            //no user is logged in
+                            startActivity(new Intent(SplashActivity.this, LoginActivity.class));
+                        else
+                            //a user is currently logged in
+                            fetchUserDocumentFromFirebase(currentUser.getUid());
+                    }
+                });
+            }
+        },5000);
     }
 
     private void handlerExecutor(final Thread[] tasks){

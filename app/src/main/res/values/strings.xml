@@ -1,7 +1,7 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
     <!-- Strings related to Splash screen-->
-    <string name="app_name">JournalApp</string>
+    <string name="app_name">Journal App</string>
     <string name="andela_logo">Andela Logo</string>
     <string name="google_logo">Google Logo</string>
     <string name="udacity_logo">Udacity Logo</string>
@@ -26,7 +26,7 @@
     <string name="pls_retry">Registration unsuccessful, please try again.</string>
     <string name="email_already_registered">E-mail address already registered</string>
     <string name="title_activity_catalog">CatalogActivity</string>
-    <string name="my_journal">My Journal</string>
+    <string name="my_journal">My Diary</string>
     <string name="login_error_message">Unable to sign in, please retry (check your email, password and/or your internet connectivity).</string>
     <string name="journal_title">Diary Entry Title</string>
     <string name="journal_content">Diary Entry Content</string>
@@ -64,4 +64,6 @@
     <string name="empty_catalog_prompt">Oops! Your catalog is empty. Click on the floating button below to insert a new diary entry to the catalog.</string>
     <string name="catalog_already_empty">Catalog is already empty</string>
     <string name="logout_prompt">Do you want to logout?</string>
+    <string name="signing_up">Signing up...</string>
+    <string name="signing_in">Signing in...</string>
 </resources>
