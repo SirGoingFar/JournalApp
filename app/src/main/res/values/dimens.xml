@@ -24,4 +24,6 @@
     <dimen name="dimen_1dp">1dp</dimen>
     <dimen name="text_8sp">8sp</dimen>
     <dimen name="text_18sp">18sp</dimen>
+    <dimen name="dimen_30dp">30dp</dimen>
+    <dimen name="dimen_60dp">60dp</dimen>
 </resources>
