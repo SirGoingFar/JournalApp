@@ -22,9 +22,11 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.eemf.sirgoingfar.journalapp.R;
 import com.eemf.sirgoingfar.journalapp.database.AppExecutors;
+import com.eemf.sirgoingfar.journalapp.firebase_transaction.task.FirebaseTransactionTasks;
 import com.eemf.sirgoingfar.journalapp.utils.NetworkUtils;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -180,10 +182,12 @@ public class LoginActivity extends AppCompatActivity{
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
-                    startActivity(new Intent(LoginActivity.this, CatalogActivity.class));
+                    //prepare local Db for new sign in
+                    fetchUserDocumentFromFirebase();
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+                            mPasswordView.setText("");
                             showProgress(false);
                         }
                     });
@@ -192,9 +196,9 @@ public class LoginActivity extends AppCompatActivity{
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+                            mPasswordView.setText("");
                             showProgress(false);
                             Snackbar.make(mEmailView, getString(R.string.login_error_message), Snackbar.LENGTH_LONG).show();
-                            mPasswordView.setText("");
                         }
                     });
                 }
@@ -312,6 +316,21 @@ public class LoginActivity extends AppCompatActivity{
             mLoginFormView.setVisibility(View.VISIBLE);
             mPasswordView.setText("");
         }
+    }
+
+    private void fetchUserDocumentFromFirebase() {
+        if(!NetworkUtils.isOnline(this)) {
+            Toast.makeText(this, getString(R.string.poor_connectivitiy),Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        //Fetch user data and populate the db using Service
+        AppExecutors.getInstance().networkIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                new FirebaseTransactionTasks().execute(LoginActivity.this, FirebaseTransactionTasks.START_CATALOG_ACTIVITY, null);
+            }
+        });
     }
 
     private boolean isEmailValid(String email) {

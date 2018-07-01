@@ -18,6 +18,7 @@ import com.eemf.sirgoingfar.journalapp.R;
 import com.eemf.sirgoingfar.journalapp.database.AppDatabase;
 import com.eemf.sirgoingfar.journalapp.database.AppExecutors;
 import com.eemf.sirgoingfar.journalapp.database.JournalEntry;
+import com.eemf.sirgoingfar.journalapp.firebase_transaction.task.FirebaseTransactionTasks;
 import com.eemf.sirgoingfar.journalapp.models.AddJournalViewModel;
 import com.eemf.sirgoingfar.journalapp.models.AddJournalViewModelFactory;
 
@@ -91,7 +92,6 @@ public class AddJournalActivity extends AppCompatActivity{
 
         if(actionBar != null)
             actionBar.setTitle(R.string.actionbar_title_edit_journal);
-
     }
 
     @Override
@@ -122,7 +122,7 @@ public class AddJournalActivity extends AppCompatActivity{
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         //validate and then save to DB
-                                        validateInputFields(content, title, mJournalEntry.getCreatedAt());
+                                        validateInputFields(content, title);
                                     }
                                 }).create().show();
                     }else {
@@ -143,7 +143,7 @@ public class AddJournalActivity extends AppCompatActivity{
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         //validate and then save to DB
-                                        validateInputFields(content, title, null);
+                                        validateInputFields(content, title);
                                     }
                                 }).create().show();
                     }else{
@@ -162,7 +162,7 @@ public class AddJournalActivity extends AppCompatActivity{
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         //validate and then save to DB
-                                        validateInputFields(content, title, mJournalEntry.getCreatedAt());
+                                        validateInputFields(content, title);
                                     }
                                 })
                                 .setPositiveButton(R.string.alert_dialog_positive_button_label, new DialogInterface.OnClickListener() {
@@ -183,7 +183,7 @@ public class AddJournalActivity extends AppCompatActivity{
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         //validate and then save to DB
-                                        validateInputFields(content, title, null);
+                                        validateInputFields(content, title);
                                     }
                                 })
                                 .setPositiveButton(R.string.alert_dialog_positive_button_label, new DialogInterface.OnClickListener() {
@@ -205,7 +205,7 @@ public class AddJournalActivity extends AppCompatActivity{
         }
     }
 
-    private void validateInputFields(String content, String title, Date createdAt) {
+    private void validateInputFields(String content, String title) {
         if(content.isEmpty()) {
             mJournalContent.setError(getString(R.string.content_not_empty_error_msg));
         }
@@ -215,33 +215,69 @@ public class AddJournalActivity extends AppCompatActivity{
         }
 
         if(!content.isEmpty() && !title.isEmpty()) {
-            saveToDatabase(title, content, createdAt);
-            saveToFirestore(title, content, createdAt);
+            saveToDatabase(title, content);
+            saveOrUpdateFirestore(title, content);
             finish();
         }
     }
 
-    private void saveToFirestore(String title, String content, Date createdAt) {
-        //Todo: Save to Firestore
+    private void saveOrUpdateFirestore(final String title, final String content) {
+        if(isEditing){
+            //update Journal on Firebase
+            AppExecutors.getInstance().networkIO().execute(new Runnable() {
+                @Override
+                public void run() {
+                    new FirebaseTransactionTasks().execute(
+                            AddJournalActivity.this,
+                            FirebaseTransactionTasks.UPDATE_DOCUMENT,
+                            new JournalEntry(
+                                    title,
+                                    content,
+                                    mJournalEntry.getCreatedAt(),
+                                    new Date(),
+                                    2,
+                                    mJournalEntry.getJournalId()
+                            ));
+                }
+            });
+        }else{
+            //save Journal to Firebase
+            AppExecutors.getInstance().networkIO().execute(new Runnable() {
+                @Override
+                public void run() {
+                    new FirebaseTransactionTasks().execute(
+                            AddJournalActivity.this,
+                            FirebaseTransactionTasks.INSERT_DOCUMENT,
+                            new JournalEntry(
+                                    title,
+                                    content,
+                                    null,
+                                    null,
+                                    1,
+                                    null
+                            ));
+                }
+            });
+        }
     }
 
-    private void saveToDatabase(String title, String content, Date createdAt) {
-        int editStatus = isEditing ? 2 : 1;
+    private void saveToDatabase(String title, String content) {
+        if(!isEditing)
+            return;
 
-        if(createdAt == null)
-            createdAt = new Date();
-
-        final JournalEntry journal = new JournalEntry(title, content, createdAt, new Date(), editStatus);
+        final JournalEntry journal = new JournalEntry(
+                journalIndex,
+                title,
+                content,
+                mJournalEntry.getCreatedAt(),
+                new Date(),
+                2,
+                mJournalEntry.getJournalId());
 
         mExecutors.diskIO().execute(new Runnable() {
             @Override
             public void run() {
-                if(isEditing) {
-                    journal.setId(journalIndex);
                     mDb.journalDao().updateJournal(journal);
-                }
-                else
-                    mDb.journalDao().insertJournal(journal);
             }
         });
     }
