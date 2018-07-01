@@ -158,6 +158,10 @@ public class LoginActivity extends AppCompatActivity{
             mEmailView.setError(getString(R.string.error_invalid_email));
             focusView = mEmailView;
             cancel = true;
+        } else if(password == null || password.isEmpty()){
+            mPasswordView.setError(getString(R.string.error_field_required));
+            focusView = mPasswordView;
+            cancel = true;
         }
 
         if (cancel) {
@@ -230,7 +234,11 @@ public class LoginActivity extends AppCompatActivity{
         View focusView = null;
 
         // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
+        if(TextUtils.isEmpty(password)){
+            mPasswordView.setError(getString(R.string.error_field_required));
+            focusView = mPasswordView;
+            cancel = true;
+        } else if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
             mPasswordView.setError(getString(R.string.error_invalid_password));
             focusView = mPasswordView;
             cancel = true;
@@ -328,7 +336,10 @@ public class LoginActivity extends AppCompatActivity{
         AppExecutors.getInstance().networkIO().execute(new Runnable() {
             @Override
             public void run() {
-                new FirebaseTransactionTasks().execute(LoginActivity.this, FirebaseTransactionTasks.START_CATALOG_ACTIVITY, null);
+                new FirebaseTransactionTasks().execute(
+                        LoginActivity.this,
+                        FirebaseTransactionTasks.START_CATALOG_ACTIVITY,
+                        null);
             }
         });
     }
@@ -338,7 +349,10 @@ public class LoginActivity extends AppCompatActivity{
     }
 
     private boolean isPasswordValid(String password) {
-        return !isRegistration || password.length() >= MIN_PASSWORD_LENGTH;
+        if(isRegistration)
+            return password.length() >= MIN_PASSWORD_LENGTH;
+        else
+            return password != null && !password.isEmpty();
     }
 
     /**
