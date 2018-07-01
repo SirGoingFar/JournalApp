@@ -10,7 +10,7 @@ import android.widget.Toast;
 
 import com.eemf.sirgoingfar.journalapp.R;
 import com.eemf.sirgoingfar.journalapp.database.AppExecutors;
-import com.eemf.sirgoingfar.journalapp.service.RetrieveUserDataService;
+import com.eemf.sirgoingfar.journalapp.firebase_transaction.task.FirebaseTransactionTasks;
 import com.eemf.sirgoingfar.journalapp.utils.NetworkUtils;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -28,10 +28,6 @@ public class SplashActivity extends AppCompatActivity {
 
     //Firebase Authentication object
     private FirebaseAuth mAuth;
-
-    public static final String SERVICE_ACTION = "start_catalog_activity";
-    public static final String USER_ID = "user_id";
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,17 +114,19 @@ public class SplashActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
     }
 
-    private void fetchUserDocumentFromFirebase(String userId) {
+    private void fetchUserDocumentFromFirebase() {
         if(!NetworkUtils.isOnline(this)) {
             Toast.makeText(this, getString(R.string.poor_connectivitiy),Toast.LENGTH_LONG).show();
             return;
         }
 
-        //Todo: Fetch user data and populate the db using Service
-        Intent intent = new Intent(this, RetrieveUserDataService.class);
-        intent.setAction(SERVICE_ACTION);
-        intent.putExtra(USER_ID, userId);
-        startService(intent);
+        //Fetch user data and populate the db using Service
+        AppExecutors.getInstance().networkIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                new FirebaseTransactionTasks().execute(SplashActivity.this, FirebaseTransactionTasks.START_CATALOG_ACTIVITY, null);
+            }
+        });
     }
 
     @Override
@@ -140,7 +138,7 @@ public class SplashActivity extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                AppExecutors.getInstance().mainThread().execute(new Runnable() {
+                AppExecutors.getInstance().onMainThread().execute(new Runnable() {
                     @Override
                     public void run() {
                         if(currentUser == null)
@@ -148,7 +146,7 @@ public class SplashActivity extends AppCompatActivity {
                             startActivity(new Intent(SplashActivity.this, LoginActivity.class));
                         else
                             //a user is currently logged in
-                            fetchUserDocumentFromFirebase(currentUser.getUid());
+                            fetchUserDocumentFromFirebase();
                     }
                 });
             }

@@ -23,6 +23,7 @@ import com.eemf.sirgoingfar.journalapp.adapters.CatalogRecyclerViewAdapter;
 import com.eemf.sirgoingfar.journalapp.database.AppDatabase;
 import com.eemf.sirgoingfar.journalapp.database.AppExecutors;
 import com.eemf.sirgoingfar.journalapp.database.JournalEntry;
+import com.eemf.sirgoingfar.journalapp.firebase_transaction.task.FirebaseTransactionTasks;
 import com.eemf.sirgoingfar.journalapp.models.CatalogViewModel;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -73,7 +74,13 @@ public class CatalogActivity extends AppCompatActivity {
                     public void run() {
                         int position = viewHolder.getAdapterPosition();
                         List<JournalEntry> journals = mAdapter.getJournals();
+
+                        //delete on local Db
                         mDb.journalDao().deleteJournal(journals.get(position));
+
+                        //delete on Firestore
+                        FirebaseTransactionTasks transactionTasks = new FirebaseTransactionTasks();
+                        transactionTasks.execute(CatalogActivity.this, FirebaseTransactionTasks.DELETE_DOCUMENT, journals.get(position));
                     }
                 });
             }
@@ -168,12 +175,19 @@ public class CatalogActivity extends AppCompatActivity {
     }
 
     private void deleteAllJournals() {
+        //delete on local db
         mExecutor.diskIO().execute(new Runnable() {
             @Override
             public void run() {
                 mDb.journalDao().deleteAllJournals();
             }
         });
+        //iteratively delete on FireStore
+        List<JournalEntry> journals = mAdapter.getJournals();
+        for (int counter = 0; counter < journals.size(); counter++) {
+            FirebaseTransactionTasks transactionTasks = new FirebaseTransactionTasks();
+            transactionTasks.execute(this, FirebaseTransactionTasks.DELETE_DOCUMENT, journals.get(counter));
+        }
     }
 
     private void logoutUser() {

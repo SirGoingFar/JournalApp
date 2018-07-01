@@ -35,7 +35,7 @@
             android:label="@string/title_activity_journal_preview" />
 
         <service
-            android:name=".service.RetrieveUserDataService"
+            android:name=".service.FirebaseTransactionService"
             android:exported="false"/>
     </application>
 </manifest>

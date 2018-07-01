@@ -16,7 +16,7 @@ public class JournalEntry {
     @ColumnInfo(name = "journal_title")
     private String journalTitle;
 
-    @ColumnInfo(name = "journL_content")
+    @ColumnInfo(name = "journal_content")
     private String journalContent;
 
     @ColumnInfo(name = "created_at")
@@ -28,24 +28,30 @@ public class JournalEntry {
     @ColumnInfo(name = "edit_status")
     private int editStatus;
 
+    @ColumnInfo(name = "journal_id")
+    private String journalId;
+
     @Ignore
     public JournalEntry(String journalTitle, String journalContent,
-                        Date createdAt, Date updatedAt, int editStatus) {
+                        Date createdAt, Date updatedAt, int editStatus, String journalId) {
         this.journalTitle = journalTitle;
         this.journalContent = journalContent;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.editStatus = editStatus;
+        this.journalId = journalId;
     }
 
     public JournalEntry(int id, String journalTitle, String journalContent,
-                        Date createdAt, Date updatedAt, int editStatus) {
+                        Date createdAt, Date updatedAt, int editStatus, String journalId) {
         this.id = id;
         this.journalTitle = journalTitle;
         this.journalContent = journalContent;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.editStatus = editStatus;
+        this.journalId = journalId;
+
     }
 
     public String getJournalTitle() {
@@ -94,5 +100,13 @@ public class JournalEntry {
 
     public void setEditStatus(int editStatus) {
         this.editStatus = editStatus;
+    }
+
+    public String getJournalId() {
+        return journalId;
+    }
+
+    public void setJournalId(String journalId) {
+        this.journalId = journalId;
     }
 }
