@@ -1,4 +1,4 @@
-JOURNAL APP
+JOURNAL APP:
 This app allows users to manage their diary entries. It has the CRUD actions which the user can perform.
 The content of user's diary is parsed for URL detections. Should the content has any, there is an in-app web browser which the
 user can use to surf the content of the web URL. Two types of browsers are built in - the app leverages the Custom Chrome Tab
