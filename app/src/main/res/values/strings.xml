@@ -61,7 +61,7 @@
     <string name="copied_link_toast_msg_content">Link copied to clipboard</string>
     <string name="never_edited">Never edited</string>
     <string name="delete_all_journals_prompt">Are you sure you want to delete all the diary entries in your catalog?</string>
-    <string name="empty_catalog_prompt">Oops! Your catalog is empty. Click on the floating button below to insert a new diary entry to the catalog.</string>
+    <string name="empty_catalog_prompt">Oops! Your catalog is empty. Click on the floating button to insert a new diary entry to the catalog.</string>
     <string name="catalog_already_empty">Catalog is already empty</string>
     <string name="logout_prompt">Do you want to logout?</string>
     <string name="signing_up">Signing up...</string>

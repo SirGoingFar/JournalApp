@@ -166,9 +166,6 @@ public class CatalogActivity extends AppCompatActivity {
 
                 return true;
 
-            case R.id.action_setting:
-                //Todo: Launch the SettingssPreferenceFragment
-
                 default:
                     return super.onOptionsItemSelected(item);
         }
