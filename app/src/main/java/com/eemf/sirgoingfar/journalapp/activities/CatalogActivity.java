@@ -25,6 +25,7 @@ import com.eemf.sirgoingfar.journalapp.database.AppExecutors;
 import com.eemf.sirgoingfar.journalapp.database.JournalEntry;
 import com.eemf.sirgoingfar.journalapp.firebase_transaction.task.FirebaseTransactionTasks;
 import com.eemf.sirgoingfar.journalapp.models.CatalogViewModel;
+import com.eemf.sirgoingfar.journalapp.utils.JournalPreviewUtil;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.List;
@@ -95,6 +96,9 @@ public class CatalogActivity extends AppCompatActivity {
         });
 
         setupViewModel();
+
+        //Start the Job
+        JournalPreviewUtil.scheduleJournalPreviewReminder(this);
     }
 
     private void setupViewModel() {

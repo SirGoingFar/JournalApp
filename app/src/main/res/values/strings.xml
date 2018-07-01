@@ -66,4 +66,7 @@
     <string name="logout_prompt">Do you want to logout?</string>
     <string name="signing_up">Signing up...</string>
     <string name="signing_in">Signing in...</string>
+    <string name="main_notification_channel_name">Primary</string>
+    <string name="journal_preview_notification_title">Some cool write-up in here</string>
+    <string name="journal_preview_notification_body">Heads up! Checkout some interesting diary entry you have in your catalog.</string>
 </resources>
