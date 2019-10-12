@@ -4,11 +4,13 @@ import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import java.util.Date;
 
 @Entity(tableName = "journal")
-public class JournalEntry {
+public class JournalEntry implements Parcelable {
 
     @PrimaryKey(autoGenerate = true)
     private int id;
@@ -53,6 +55,26 @@ public class JournalEntry {
         this.journalId = journalId;
 
     }
+
+    protected JournalEntry(Parcel in) {
+        id = in.readInt();
+        journalTitle = in.readString();
+        journalContent = in.readString();
+        editStatus = in.readInt();
+        journalId = in.readString();
+    }
+
+    public static final Creator<JournalEntry> CREATOR = new Creator<JournalEntry>() {
+        @Override
+        public JournalEntry createFromParcel(Parcel in) {
+            return new JournalEntry(in);
+        }
+
+        @Override
+        public JournalEntry[] newArray(int size) {
+            return new JournalEntry[size];
+        }
+    };
 
     public String getJournalTitle() {
         return journalTitle;
@@ -108,5 +130,19 @@ public class JournalEntry {
 
     public void setJournalId(String journalId) {
         this.journalId = journalId;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
+        dest.writeString(journalTitle);
+        dest.writeString(journalContent);
+        dest.writeInt(editStatus);
+        dest.writeString(journalId);
     }
 }
